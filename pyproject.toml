@@ -1,0 +1,25 @@
+[project]
+name = "cctx-importer"
+version = "0.1.0"
+description = "Import Claude context profiles from configs directory"
+readme = "readme.md"
+authors = [
+    { name = "Leynier Gutiérrez González", email = "leynier41@gmail.com" },
+]
+requires-python = ">=3.13"
+
+dependencies = ["typer[all]>=0.21.1"]
+
+[dependency-groups]
+dev = ["ruff>=0.14.11", "ty>=0.0.11"]
+
+[project.scripts]
+cctx-importer = "src.script:app"
+
+[build-system]
+requires = ["uv_build>=0.9.22,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "src"
+module-root = ""

@@ -1,10 +1,13 @@
+install:
+	uv sync --all-groups --all-extras
+
 lint:
-	uvx ruff format
-	uvx ruff check --fix
-	uvx ty check
+	uv run ruff format
+	uv run ruff check --fix
+	uv run ty check
 
 import-from-configs:
-	uv run script.py cctx
+	uv run cctx-importer cctx
 
 import-from-ccs:
-	uv run script.py ccs
+	uv run cctx-importer ccs

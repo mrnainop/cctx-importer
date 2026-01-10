@@ -1,8 +1,3 @@
-# /// script
-# requires-python = ">=3.13"
-# dependencies = ["typer"]
-# ///
-
 import json
 import subprocess
 import sys
@@ -106,8 +101,8 @@ def ensure_default_config(configs_dir: Path) -> None:
 
 
 @app.command()
-def cctx() -> None:
-    """Process and import Claude context profiles from configs directory."""
+def from_configs() -> None:
+    """Import Claude context profiles from configs directory."""
     configs_dir = Path(__file__).parent / "configs"
     ensure_default_config(configs_dir)
     default_config = load_default_config(configs_dir)
@@ -119,8 +114,8 @@ def cctx() -> None:
 
 
 @app.command()
-def ccs() -> None:
-    """Process CCS settings files from ~/.ccs/ directory."""
+def from_ccs() -> None:
+    """Import Claude context profiles from CCS settings files."""
     ccs_dir = get_ccs_dir()
     if not ccs_dir.exists():
         print(f"CCS directory not found: {ccs_dir}", file=sys.stderr)
@@ -139,7 +134,3 @@ def ccs() -> None:
     if current_context:
         restore_context(current_context)
     print("CCS profiles processed successfully")
-
-
-if __name__ == "__main__":
-    app()
