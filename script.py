@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.13"
-# dependencies = []
+# dependencies = ["typer"]
 # ///
 
 import json
@@ -9,6 +9,10 @@ import sys
 import tempfile
 from pathlib import Path
 from typing import Any
+
+import typer
+
+app = typer.Typer(help="Claude Context Profile Manager")
 
 
 def deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
@@ -83,8 +87,29 @@ def process_profile(
     import_profile(profile_name, merged)
 
 
-def main() -> None:
+def get_ccs_dir() -> Path:
+    return Path.home() / ".ccs"
+
+
+def ensure_default_config(configs_dir: Path) -> None:
+    default_path = configs_dir / "default.json"
+    if default_path.exists():
+        return
+    if get_current_context() is not None:
+        return
+    claude_settings = Path.home() / ".claude" / "settings.json"
+    if not claude_settings.exists():
+        return
+    configs_dir.mkdir(parents=True, exist_ok=True)
+    default_path.write_text(claude_settings.read_text())
+    print(f"Copied {claude_settings} to {default_path}")
+
+
+@app.command()
+def cctx() -> None:
+    """Process and import Claude context profiles from configs directory."""
     configs_dir = Path(__file__).parent / "configs"
+    ensure_default_config(configs_dir)
     default_config = load_default_config(configs_dir)
     current_context = get_current_context()
     for config_path in configs_dir.glob("*.json"):
@@ -93,5 +118,28 @@ def main() -> None:
         restore_context(current_context)
 
 
+@app.command()
+def ccs() -> None:
+    """Process CCS settings files from ~/.ccs/ directory."""
+    ccs_dir = get_ccs_dir()
+    if not ccs_dir.exists():
+        print(f"CCS directory not found: {ccs_dir}", file=sys.stderr)
+        raise typer.Exit(1)
+    configs_dir = Path(__file__).parent / "configs"
+    ensure_default_config(configs_dir)
+    default_config = load_default_config(configs_dir)
+    current_context = get_current_context()
+    for settings_path in ccs_dir.glob("*.settings.json"):
+        profile_name = settings_path.name.replace(".settings.json", "")
+        settings = json.loads(settings_path.read_text())
+        merged = deep_merge(default_config, settings)
+        if current_context is not None and current_context == profile_name:
+            unset_context(current_context)
+        import_profile(profile_name, merged)
+    if current_context:
+        restore_context(current_context)
+    print("CCS profiles processed successfully")
+
+
 if __name__ == "__main__":
-    main()
+    app()
