@@ -1,71 +1,33 @@
-# Claude Context Profile Manager
+# cctx-importer | Claude Context Switcher Importer
 
-Script to manage Claude Code context profiles stored as JSON files.
+Import [CCS](https://github.com/kaitranntt/ccs) profiles into [cctx](https://github.com/nwiizo/cctx).
 
-## Overview
+CCS lets you configure Claude Code with different providers and accounts, but it doesn't modify Claude's default settings. This means you must use the `ccs` command and IDE extensions won't work.
 
-This script processes JSON configuration files in the `configs/` directory and imports them as profiles using the `cctx` CLI tool. Each profile is created by deep merging the specific config file with `default.json` (if it exists).
+cctx solves this by overwriting Claude's settings file, so you can use the `claude` command directly or IDE extensions.
 
-## Features
-
-- **Deep merge**: Combines `default.json` with each profile config, allowing shared base settings
-- **Safe context handling**: Automatically unsets the active context before deleting it, then restores it after processing
-- **Error tolerance**: Continues processing remaining profiles if one fails
-- **Progress feedback**: Logs each processed profile and context changes
+This tool bridges both: it imports your CCS profiles into cctx so you can switch between them and use them with `claude` or IDE extensions.
 
 ## Requirements
 
-- [`cctx`](https://github.com/nwiizo/cctx) CLI tool installed and available in PATH
-- [`uv`](https://docs.astral.sh/uv) (for running the script)
+- [cctx](https://github.com/nwiizo/cctx)
+- [uv](https://docs.astral.sh/uv)
 
 ## Usage
 
 ```bash
-uv run script.py
+# Import profiles from ~/.ccs/*.settings.json
+uv run cctx-importer from-ccs
+
+# Import profiles from ~/.cctx-importer/*.json
+uv run cctx-importer from-configs
 ```
 
-## Configuration Structure
+Both commands merge each profile with `~/.cctx-importer/default.json` if it exists.
 
-Place JSON files in the `configs/` directory:
+## Options
 
-```text
-configs/
-├── default.json    # Base configuration (optional)
-├── glm.json        # Profile "glm"
-└── other.json      # Profile "other"
+```bash
+# Use a custom directory for default.json
+uv run cctx-importer from-ccs --configs-dir /path/to/dir
 ```
-
-Each JSON file is merged with `default.json` (if exists) and imported as a profile named after the filename (without extension).
-
-## Example
-
-**configs/default.json:**
-
-```json
-{
-  "hooks": {
-    "pre-model-response": "echo 'Running hook...'"
-  },
-  "model": "claude-opus-4-5-20251101"
-}
-```
-
-**configs/glm.json:**
-
-```json
-{
-  "env": {
-    "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic",
-    "ANTHROPIC_MODEL": "glm-4.7"
-  }
-}
-```
-
-Result: The "glm" profile will have both the hooks and model from `default.json`, plus the env variables from `glm.json`.
-
-## Available Commands
-
-| Command     | Description                  |
-| ----------- | ---------------------------- |
-| `make lint` | Run linters and formatters   |
-| `make run`  | Run the script               |
