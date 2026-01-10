@@ -11,16 +11,35 @@ This tool bridges both: it imports your CCS profiles into cctx so you can switch
 ## Requirements
 
 - [cctx](https://github.com/nwiizo/cctx)
-- [uv](https://docs.astral.sh/uv)
+
+## Installation
+
+The recommended way is to run directly with [uvx](https://docs.astral.sh/uv/guides/tools/) (no installation needed):
+
+```bash
+uvx cctx-importer from-ccs
+```
+
+Alternatively, install with pip:
+
+```bash
+pip install cctx-importer
+```
+
+Or with uv:
+
+```bash
+uv tool install cctx-importer
+```
 
 ## Usage
 
 ```bash
 # Import profiles from ~/.ccs/*.settings.json
-uv run cctx-importer from-ccs
+cctx-importer from-ccs
 
 # Import profiles from ~/.cctx-importer/*.json
-uv run cctx-importer from-configs
+cctx-importer from-configs
 ```
 
 Both commands merge each profile with `~/.cctx-importer/default.json` if it exists.
@@ -29,5 +48,5 @@ Both commands merge each profile with `~/.cctx-importer/default.json` if it exis
 
 ```bash
 # Use a custom directory for default.json
-uv run cctx-importer from-ccs --configs-dir /path/to/dir
+cctx-importer from-ccs --configs-dir /path/to/dir
 ```
