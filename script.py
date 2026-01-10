@@ -50,7 +50,7 @@ def import_profile(profile_name: str, merged: dict[str, Any]) -> bool:
         json.dump(merged, tmp, indent=2)
         tmp_path = tmp.name
     try:
-        cmd = f"cctx -d {profile_name} && cctx --import {profile_name} < {tmp_path}"
+        cmd = f"cctx -d {profile_name} 2>/dev/null; cctx --import {profile_name} < {tmp_path}"
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
         if result.returncode != 0:
             print(f"Error processing {profile_name}: {result.stderr}", file=sys.stderr)
