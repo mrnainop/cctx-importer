@@ -3,11 +3,12 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Annotated, Any
 
 import typer
 
 app = typer.Typer(help="Claude Context Profile Manager")
+DEFAULT_CONFIGS_DIR = Path.home() / ".cctx-importer"
 
 
 def deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
@@ -101,9 +102,14 @@ def ensure_default_config(configs_dir: Path) -> None:
 
 
 @app.command()
-def from_configs() -> None:
+def from_configs(
+    configs_dir: Annotated[
+        Path | None,
+        typer.Option("--configs-dir", "-d", help="Custom configs directory"),
+    ] = None,
+) -> None:
     """Import Claude context profiles from configs directory."""
-    configs_dir = Path(__file__).parent / "configs"
+    configs_dir = configs_dir or DEFAULT_CONFIGS_DIR
     ensure_default_config(configs_dir)
     default_config = load_default_config(configs_dir)
     current_context = get_current_context()
@@ -114,13 +120,20 @@ def from_configs() -> None:
 
 
 @app.command()
-def from_ccs() -> None:
+def from_ccs(
+    configs_dir: Annotated[
+        Path | None,
+        typer.Option(
+            "--configs-dir", "-d", help="Custom configs directory for default.json"
+        ),
+    ] = None,
+) -> None:
     """Import Claude context profiles from CCS settings files."""
     ccs_dir = get_ccs_dir()
     if not ccs_dir.exists():
         print(f"CCS directory not found: {ccs_dir}", file=sys.stderr)
         raise typer.Exit(1)
-    configs_dir = Path(__file__).parent / "configs"
+    configs_dir = configs_dir or DEFAULT_CONFIGS_DIR
     ensure_default_config(configs_dir)
     default_config = load_default_config(configs_dir)
     current_context = get_current_context()
