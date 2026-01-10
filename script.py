@@ -22,7 +22,7 @@ def deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]
 
 
 def get_current_context() -> str | None:
-    result = subprocess.run("cctx -c", shell=True, capture_output=True, text=True)
+    result = subprocess.run(["cctx", "-c"], capture_output=True, text=True)
     if result.returncode == 0 and result.stdout.strip():
         return result.stdout.strip()
     return None
@@ -37,12 +37,12 @@ def load_default_config(configs_dir: Path) -> dict[str, Any]:
 
 def unset_context(context: str) -> None:
     print(f"Unsetting active context {context}")
-    subprocess.run("cctx -u", shell=True, capture_output=True, text=True)
+    subprocess.run(["cctx", "-u"], capture_output=True, text=True)
 
 
 def restore_context(context: str) -> None:
     print(f"Restoring context {context}")
-    subprocess.run(f"cctx {context}", shell=True, capture_output=True)
+    subprocess.run(["cctx", context], capture_output=True)
 
 
 def import_profile(profile_name: str, merged: dict[str, Any]) -> bool:
@@ -50,8 +50,14 @@ def import_profile(profile_name: str, merged: dict[str, Any]) -> bool:
         json.dump(merged, tmp, indent=2)
         tmp_path = tmp.name
     try:
-        cmd = f"cctx -d {profile_name} 2>/dev/null; cctx --import {profile_name} < {tmp_path}"
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        subprocess.run(["cctx", "-d", profile_name], capture_output=True, text=True)
+        with open(tmp_path, "r") as f:
+            result = subprocess.run(
+                ["cctx", "--import", profile_name],
+                stdin=f,
+                capture_output=True,
+                text=True,
+            )
         if result.returncode != 0:
             print(f"Error processing {profile_name}: {result.stderr}", file=sys.stderr)
             return False
